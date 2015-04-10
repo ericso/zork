@@ -17,5 +17,3 @@ class GameNode:
     self.south = south
     self.east = east
     self.west = west
-
-
