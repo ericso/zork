@@ -3,7 +3,7 @@ class Player:
   """Represents a player character in the game world
   """
 
-  def __init__(name, curr_pos=None):
+  def __init__(self, name, curr_pos=None):
     """
     Args:
       text: str - The name of the player
@@ -12,7 +12,7 @@ class Player:
     self.name = name
     self.curr_pos = curr_pos
 
-  def move(direction):
+  def move(self, direction):
     """Moves a player in the direction indicated
 
     Args:

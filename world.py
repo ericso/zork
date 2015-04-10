@@ -3,7 +3,7 @@ class GameNode:
   """Represents a position in the game world
   """
 
-  def __init__(text=None, north=None, south=None, east=None, west=None):
+  def __init__(self, text=None, north=None, south=None, east=None, west=None):
     """
     Args:
       text: str - Text that is displayed to player upon entering position
