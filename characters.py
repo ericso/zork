@@ -18,8 +18,12 @@ class Player:
     Args:
       direction: str - The direction the player will move to
     """
+    # TODO(eric) figure out some sort of event system
+
     if self.curr_pos == None:
-      pass
+      print("Player is off the map!")
+    elif getattr(self.curr_pos, direction) == None:
+      print("Invalid direction")
     else:
       if direction == 'north':
         self.curr_pos = self.curr_pos.north

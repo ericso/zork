@@ -9,22 +9,42 @@ from clint.textui import prompt, puts, colored
 
 from world import GameNode
 from characters import Player
-
-
-GAME_ROOT_NODE = None
-GAME_PLAYER = None
+from const import (
+  GAME_ROOT_NODE,
+  GAME_PLAYER,
+  MOVEMENT_SET,
+  LOOKING_SET,
+  DIRECTION_SET,
+  DIRECTION_OPPOSITES,
+)
 
 
 def _build_game_world():
   """Creates random GameNodes and connects them
   """
   new_node = GameNode(text="You awake in a field. It's dark out...")
-  new_node.north = GameNode(text="Walking north, you see a forest in distance.")
-  new_node.south = GameNode(text="You head south. There is a large wall blocking your path. The wall runs for miles in either direction. It is high and there's no obvious way to climb over it.")
-  new_node.east = GameNode(text="You come upon a house. It's an eerie house.")
-  new_node.west = GameNode(text="You reach a wide gushing river. The water is freezing.")
+
+  _connect_game_node(new_node, GameNode(text="Walking north, you see a forest in distance."), 'north')
+  _connect_game_node(new_node, GameNode(text="You head south. There is a large wall blocking your path. The wall runs for miles in either direction. It is high and there's no obvious way to climb over it."), 'south')
+  _connect_game_node(new_node, GameNode(text="You come upon a house. It's an eerie house."), 'east')
+  _connect_game_node(new_node, GameNode(text="You reach a wide gushing river. The water is freezing."), 'west')
 
   return new_node
+
+def _connect_game_node(node1, node2, direction):
+  """Adds node2 to node1.direction
+
+  Args:
+    node1: GameNode - source node
+    node2: GameNode - destination node
+    direction: str - the direction (north, south, east, west) from node1 to node2
+  """
+  if getattr(node1, direction) == None:
+    setattr(node1, direction, node2)
+    setattr(node2, DIRECTION_OPPOSITES[direction], node1)
+  else:
+    print("%s node already has a connection in the %s direction" % (node1, direction))
+
 
 def _create_player(name, curr_pos):
   """Generates a Player object for the user to move around
@@ -53,13 +73,13 @@ def _get_user_action():
   while not action:
     try:
       token = next(input_gen)
-    except:
-      print("End of input")
+    except StopIteration as err:
+      print(err)
       break
 
-    if token in movement_set:
+    if token in MOVEMENT_SET:
       action = 'move'
-    elif token in looking_set:
+    elif token in LOOKING_SET:
       action = 'look'
 
   direction = None
@@ -70,7 +90,7 @@ def _get_user_action():
       print("End of input")
       break
 
-    if token in direction_set:
+    if token in DIRECTION_SET:
       direction = token
 
   return (action, direction)
@@ -78,24 +98,6 @@ def _get_user_action():
 if __name__ == '__main__':
   # name = prompt.query("What is your name?")
   # puts(colored.blue("Hi {0}.".format(name)))
-
-  movement_set = set([
-    'move',
-    'walk',
-    'go',
-    'proceed',
-  ])
-  looking_set = set([
-    'look',
-    'gaze',
-    'examine',
-  ])
-  direction_set = set([
-    'north',
-    'south',
-    'east',
-    'west',
-  ])
 
   # Create the game world
   GAME_ROOT_NODE = _build_game_world()
@@ -111,7 +113,7 @@ if __name__ == '__main__':
     action, direction = _get_user_action()
     print(action, direction)
 
-    if action == 'move' and direction in direction_set:
+    if action == 'move' and direction in DIRECTION_SET:
       GAME_PLAYER.move(direction)
 
       print(GAME_PLAYER.curr_pos)
